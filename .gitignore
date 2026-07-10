@@ -1,0 +1,15 @@
+# Data lives outside the repo (DRCC_DATA); never commit data artefacts.
+*.nc
+*.RData
+*.rds
+*.dta
+*.csv
+*.xlsx
+
+# R / Python / OS cruft
+.Rhistory
+.RData
+.Rproj.user/
+__pycache__/
+*.pyc
+.DS_Store
