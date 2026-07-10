@@ -29,8 +29,15 @@ drcc-pipeline/
 │   ├── merge_daily_panels.R      # per-variable extractions → merged daily panels (+ Stata for admin-0)
 │   ├── build_annual_indicators.R # daily panels → annual indicators + composite indices (SHINY_TS)
 │   └── split_annual_by_level.R   # SHINY_TS → annual_admin0/1/2 panels (+ CSV for admin-0/1)
+├── 4_figures/
+│   └── make_figures.R            # manuscript Figures 1-4 from the DRCC data products
 ├── validation/
-│   └── zonal_vs_extract_benchmark.R  # reproducibility check of the zonal aggregation
+│   ├── zonal_vs_extract_benchmark.R  # reproducibility check of the zonal aggregation
+│   ├── download_berkeley.R       # fetch Berkeley Earth country series
+│   ├── validate_berkeley.R       # admin-0 validation vs Berkeley Earth → Figure 5
+│   ├── download_be_states.R      # fetch Berkeley Earth US-state series
+│   └── validate_us_states.R      # admin-1 validation vs Berkeley Earth → Figure 6
+├── R/setup_packages.R, R/setup_figure_packages.R
 ├── config.R, LICENSE, README.md
 ```
 
@@ -89,6 +96,29 @@ Rscript 3_panels/split_annual_by_level.R
 `./run_pipeline.sh` runs the same sequence. Every stage is idempotent: existing
 outputs are skipped, so runs can be resumed.
 
+## Reproducing the manuscript figures
+
+After the panels are built, the figures are regenerated from the DRCC outputs
+(written to `$DRCC_DATA/figures/`):
+
+```bash
+# Figures 1-4 (coverage map, time-series, admin-2 change densities, OWID scatter)
+Rscript 4_figures/make_figures.R          # Figure 4 also needs OWID_CSV (see below)
+
+# Figures 5-6 (external validation vs Berkeley Earth) — download then plot
+Rscript validation/download_berkeley.R
+Rscript validation/validate_berkeley.R    # -> Figure 5
+Rscript validation/download_be_states.R
+Rscript validation/validate_us_states.R   # -> Figure 6
+```
+
+Figures **7 and 8** are screenshots of the interactive map and geocode-to-region
+tools and are not generated from code.
+
+The figure/validation scripts load an extra plotting stack via
+`R/setup_figure_packages.R` (ggplot2, ggsci, patchwork, countrycode, …), kept
+separate from the headless core pipeline.
+
 ## External inputs (not in this repository)
 
 The ERA5 → CEMS branch runs end-to-end from the downloads above. Three inputs are
@@ -103,6 +133,10 @@ supplied by the user because they are licensed or produced outside this pipeline
 3. **Wet-bulb indicator table** (`WETBULB_TS_RDATA`) — `build_annual_indicators.R`
    carries the wet-bulb rows (`wbt27`, `wetbulbtemperature`, `wetbulbdays`) from
    this table rather than recomputing them; supply it at the configured path.
+4. **Our World in Data monthly temperature CSV** (`OWID_CSV`) — used only by the
+   Figure 4 validation scatter; download from https://ourworldindata.org and
+   place at `$DRCC_DATA/validation/OWID_temperature.csv`. The Berkeley Earth
+   series for Figures 5-6 are fetched automatically by the `download_*` scripts.
 
 ## Data sources
 

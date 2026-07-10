@@ -5,6 +5,9 @@
 *.dta
 *.csv
 *.xlsx
+*.png
+be_raw/
+be_states/
 
 # R / Python / OS cruft
 .Rhistory

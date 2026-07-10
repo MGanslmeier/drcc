@@ -28,6 +28,12 @@ DIR_FINAL              <- file.path(DRCC_DATA, "final")                 # merged
 DIR_ANNUAL             <- file.path(DIR_FINAL, "annual")               # annual panels split by admin level
 DIR_META               <- file.path(DIR_FINAL, "meta")                # META.xlsx
 DIR_SHINY              <- file.path(DIR_FINAL, "shiny")                # SHINY_TS long annual-indicator table
+DIR_VALIDATION         <- file.path(DRCC_DATA, "validation")           # external-validation downloads + comparison outputs
+DIR_FIGURES            <- file.path(DRCC_DATA, "figures")              # generated manuscript figures (PNG)
+
+# Our World in Data monthly temperature CSV, used for the admin-0 validation
+# figure (Figure 4). Obtain from https://ourworldindata.org and place here.
+OWID_CSV <- Sys.getenv("OWID_CSV", unset = file.path(DIR_VALIDATION, "OWID_temperature.csv"))
 
 # The wet-bulb annual-indicator table carried forward for wbt27 / wetbulbtemperature
 # rows (see build_annual_indicators.R). Supplied externally; not produced by the
